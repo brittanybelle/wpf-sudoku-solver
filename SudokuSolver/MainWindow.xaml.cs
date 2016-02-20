@@ -24,5 +24,15 @@ namespace SudokuSolver
         {
             InitializeComponent();
         }
+
+        private void LoadFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("Load file button was clicked.");
+        }
+
+        private void SolveButton_Click(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("Solve button was clicked.");
+        }
     }
 }

@@ -13,5 +13,8 @@ namespace SudokuSolver
     /// </summary>
     public partial class App : Application
     {
+        /* The app opens MainWindow by default, and the main program loop is
+         * located there.
+         */
     }
 }

@@ -4,9 +4,62 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SudokuSolver"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow"
+        Height="600" Width="1200"
+        MinHeight="600" MinWidth="800">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="4*" />
+        </Grid.RowDefinitions>
         
+        <!-- Border styles -->
+        <Border Grid.Column="0" Grid.RowSpan="2" BorderBrush="WhiteSmoke"  BorderThickness="5" Padding="15" />
+        <Border Grid.Column="1" Grid.RowSpan="2" BorderBrush="WhiteSmoke" BorderThickness="0,5,5,5" Padding="15" />
+
+        <!-- Left top -->
+        <StackPanel Grid.Column="0" Grid.Row="0" VerticalAlignment="Center">
+            <TextBlock Margin="15,15,15,0" Padding="5" HorizontalAlignment="Center" TextAlignment="Center">
+                Load a file and/or define the initial board below. <LineBreak />
+                Input files must contain digits 1-9 to represent cell values, <LineBreak />
+                or the characters "0" or "." (period) to represent blank cells.
+            </TextBlock>
+            <Button
+                x:Name="LoadFileButton"
+                Margin="15"
+                Padding="10,5,10,5"
+                HorizontalAlignment="Center"
+                Content="Load File as Input..."
+                Click="LoadFileButton_Click"
+                />
+        </StackPanel>
+
+        <!-- Left main -->
+        <Grid Grid.Column="0" Grid.Row="1">
+
+        </Grid>
+
+        <!-- Right top -->
+        <StackPanel Grid.Column="1" Grid.Row="0" VerticalAlignment="Center">
+            <Button
+                x:Name="SolveButton"
+                Margin="15"
+                Padding="10,5,10,5"
+                HorizontalAlignment="Center"
+                Content="Solve!"
+                Click="SolveButton_Click"
+                />
+        </StackPanel>
+
+        <!-- Right main -->
+        <Grid Grid.Column="1" Grid.Row="1">
+
+        </Grid>
+
     </Grid>
 </Window>
