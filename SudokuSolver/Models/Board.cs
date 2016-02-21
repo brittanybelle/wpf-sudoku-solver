@@ -101,6 +101,7 @@ namespace SudokuSolver.Models
             return true;
         }
 
+
         public void CheckCellValidityOnUpdate(object sender, PropertyChangedEventArgs args)
         {
             int rowIndex = (sender as Cell).Row;
@@ -185,6 +186,19 @@ namespace SudokuSolver.Models
             return GetCell(rowIndex, columnIndex).Content;
         }
 
+        public bool NumberIsInList(int numberToTest, List<Cell> listToTest)
+        {
+            bool returnValue = false;
+            foreach (Cell cell in listToTest)
+            {
+                if (cell.Content == numberToTest)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public List<Cell> GetRow(int rowIndex)
         {
             return cells[rowIndex];
@@ -230,7 +244,7 @@ namespace SudokuSolver.Models
             return square;
         }
 
-        private int GetSquareIndex(int rowIndex, int columnIndex)
+        public static int GetSquareIndex(int rowIndex, int columnIndex)
         {
             if (rowIndex < 3)
             {

@@ -84,14 +84,24 @@
                     Input files must contain digits 1-9 to represent cell values, <LineBreak />
                     or the characters "0" or "." (period) to represent blank cells.
                 </TextBlock>
-                <Button
-                    x:Name="LoadFileButton"
-                    Margin="5"
-                    Padding="10,5,10,5"
-                    HorizontalAlignment="Center"
-                    Content="Load File as Input..."
-                    Click="LoadFileButton_Click"
-                    />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button
+                        x:Name="ClearInputButtonButton"
+                        Margin="5"
+                        Padding="10,5,10,5"
+                        HorizontalAlignment="Center"
+                        Content="Clear Board"
+                        Click="ClearInputButton_Click"
+                        />
+                    <Button
+                        x:Name="LoadFileButton"
+                        Margin="5"
+                        Padding="10,5,10,5"
+                        HorizontalAlignment="Center"
+                        Content="Load File as Input..."
+                        Click="LoadFileButton_Click"
+                        />
+                </StackPanel>
             </StackPanel>
         </Viewbox>
 

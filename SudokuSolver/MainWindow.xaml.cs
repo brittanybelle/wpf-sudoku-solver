@@ -54,6 +54,12 @@ namespace SudokuSolver
             }            
         }
 
+        private void ClearInputButton_Click(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("Clear input button was clicked.");
+            InputBoard.ClearBoard();
+        }
+
         private void SolveButton_Click(object sender, RoutedEventArgs e)
         {
             Console.WriteLine("Solve button was clicked.");
