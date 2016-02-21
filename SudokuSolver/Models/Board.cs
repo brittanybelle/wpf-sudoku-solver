@@ -101,6 +101,22 @@ namespace SudokuSolver.Models
             return true;
         }
 
+        public bool IsFull()
+        {
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    if (cells[i][j].Content == 0)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
 
         public void CheckCellValidityOnUpdate(object sender, PropertyChangedEventArgs args)
         {

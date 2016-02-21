@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -22,44 +24,51 @@ namespace SudokuSolver.Models
         {
             // Initialize
             ActiveBoard.UpdateBoard(inputArray);
-            emptyCellsRemaining = new List<Cell>();
-            UpdateEmptyCellsList();
+            emptyCellsRemaining = GetEmptyCellsFromBoard(ActiveBoard);
 
             // Run Loop
             while (emptyCellsRemaining.Count > 0)
             {
                 bool test1Passed = false;
                 bool test2Passed = false;
+                bool test3Passed = false;
 
                 test1Passed = RunCandidateCheckingMethod();
                 test2Passed = RunPlaceFindingMethod();
 
-                if (! (test1Passed || test2Passed))
+                if (!(test1Passed || test2Passed))
+                {
+                    test3Passed = RunBruteForceMethod();
+                }
+
+                if (! (test1Passed || test2Passed || test3Passed))
                 {
                     MessageBox.Show("Puzzle is unsolvable.");
                     break;
                 }
             }
+
+            if (ActiveBoard.IsValid() && ActiveBoard.IsFull())
+            {
+                MessageBox.Show("Puzzle solved!");
+            }
         }
 
-        private void UpdateEmptyCellsList()
+        private List<Cell> GetEmptyCellsFromBoard(Board inputBoard)
         {
+            List<Cell> listOfEmptyCells = new List<Cell>();
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)
                 {
-                    if (ActiveBoard.Cells[i][j].Content == 0)
+                    if (inputBoard.Cells[i][j].Content == 0)
                     {
-                        emptyCellsRemaining.Add(ActiveBoard.Cells[i][j]);
+                        listOfEmptyCells.Add(inputBoard.Cells[i][j]);
                     }
                 }
             }
 
-            /*
-            for (int i = 0; i < emptyCellsRemaining.Count; i++)
-            {
-                Console.WriteLine("empty cell: " + emptyCellsRemaining[i].Row + ",  " + emptyCellsRemaining[i].Column);
-            }*/
+            return listOfEmptyCells;
         }
 
         private List<Cell> GetEmptyCellsFromList(List<Cell> listOfCells)
@@ -81,6 +90,12 @@ namespace SudokuSolver.Models
             emptyCellsRemaining.RemoveAt(indexToRemove);
         }
 
+        /// <summary>
+        /// "Candidate Checking Method" - for each empty cell, if there is only
+        /// one possible value that the cell can take, then update the cell
+        /// with that value.
+        /// </summary>
+        /// <returns>True if a correct number is found; else false.</returns>
         private bool RunCandidateCheckingMethod()
         {
             // Loop through empty cells
@@ -90,7 +105,7 @@ namespace SudokuSolver.Models
                 int row = cellToCheck.Row;
                 int col = cellToCheck.Column;
 
-                List<int> listOfCandidates = GetListOfCandidatesAtCell(row, col);
+                List<int> listOfCandidates = GetListOfCandidatesAtCell(ref ActiveBoard, row, col);
 
                 if (listOfCandidates.Count == 1)
                 {
@@ -109,7 +124,7 @@ namespace SudokuSolver.Models
         /// cell that can possibly contain that number (within the row, or
         /// column, or 3x3 square) then fill that cell.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>True if a correct number is found; else false.</returns>
         private bool RunPlaceFindingMethod()
         {
             // Loop through digits
@@ -200,12 +215,143 @@ namespace SudokuSolver.Models
             return false;
         }
 
-        private List<int> GetListOfCandidatesAtCell(int rowIndex, int columnIndex)
+        /// <summary>
+        /// Brute force: run hypothetical boards using a dumb brute force
+        /// method. The recursive RunHypotheticalBoard function is used here.
+        /// </summary>
+        /// <returns>Hopefully a completed board.</returns>
+        private bool RunBruteForceMethod()
+        {
+            Board returnBoard = new Board();
+            returnBoard = RunHypotheticalBoard(ActiveBoard);
+
+            // Triple checking our recursive function's output...
+            if (returnBoard != null)
+            {
+                if (returnBoard.IsValid() && returnBoard.IsFull())
+                {
+                    ActiveBoard.UpdateBoard(returnBoard.GetBoardStateAsIntArray());
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        // recursive function to do depth-first search.
+        private Board RunHypotheticalBoard(Board startBoard)
+        {
+            Console.WriteLine("ÈIN AGAINÈ");
+
+            // Make a new board for testing purposes
+            Board hypotheticalBoard = new Board();
+            hypotheticalBoard.UpdateBoard(startBoard.GetBoardStateAsIntArray());
+
+            List<Cell> listOfEmptyCells = GetEmptyCellsFromBoard(hypotheticalBoard);
+
+            // Check that there are still empty cells left. If not, return the board.
+            if (listOfEmptyCells.Count > 0)
+            {
+                // Start by choosing a particular cell with a small number of possible candidates, to limit the branching options.
+                Cell cellToFill = ChooseEmptyCellWithLeastNumberOfCandidates(ref hypotheticalBoard, listOfEmptyCells);
+                List<int> listOfCandidates = GetListOfCandidatesAtCell(ref hypotheticalBoard, cellToFill.Row, cellToFill.Column);
+
+                // Check that list of candidates is nonzero. If not, this is a dead end, so return null.
+                if (listOfCandidates.Count > 0)
+                {
+                    // Now we iterate through each possible value.
+                    for (int i = 0; i < listOfCandidates.Count; i++)
+                    {
+                        // Set up a new "dummy" board.
+                        Board newHypotheticalBoard = new Board();
+                        newHypotheticalBoard.UpdateBoard(hypotheticalBoard.GetBoardStateAsIntArray());
+
+                        // In the dummy board, add the potential cell value (current value)
+                        newHypotheticalBoard.Cells[cellToFill.Row][cellToFill.Column].Content = listOfCandidates[i];
+
+                        // Confirm board validity (not really necessary, but just for paranoid double-checking)
+                        if (!newHypotheticalBoard.IsValid())
+                        {
+                            MessageBox.Show("Grievous error has occurred!!");
+                            return null;
+                        }
+
+                        // Check whether board is full. If it's full, we're done.
+                        if (newHypotheticalBoard.IsFull())
+                        {
+                            return newHypotheticalBoard;
+                        }
+
+                        // If the board's not full, we need to make another branch.
+                        else
+                        {
+                            newHypotheticalBoard = RunHypotheticalBoard(newHypotheticalBoard);
+                            if (newHypotheticalBoard != null)
+                            {
+                                break;
+                            }
+                        }
+                        /*
+                        // Confirm board validity (not really necessary, but just for paranoid double-checking)
+                        if (!newHypotheticalBoard.IsValid())
+                        {
+                            MessageBox.Show("Grievous error has occurred!!");
+                            return null;
+                        }
+                        // Check whether board is full. If it's full, we're done.
+                        else if (newHypotheticalBoard.IsFull())
+                        {
+                            return newHypotheticalBoard;
+                        }
+                        // If the board's not full, we need to test another value.
+                        else
+                        {
+                            newHypotheticalBoard = RunHypotheticalBoard(newHypotheticalBoard);
+                            if newHypotheticalBoard !=
+                            return newHypotheticalBoard;
+                        } */
+                    } // end for-loop
+                    return null;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return hypotheticalBoard;
+            }
+        }
+
+        private Cell ChooseEmptyCellWithLeastNumberOfCandidates(ref Board board, List<Cell> listOfCells)
+        {
+            Cell idealCell = new Cell(0, 10, 10);
+            int leastNumberOfCandidates = 10; // could be any large number greater than 9
+            foreach (Cell cell in listOfCells)
+            {
+                int numberOfCandidates = GetListOfCandidatesAtCell(ref board, cell.Row, cell.Column).Count;
+                if (numberOfCandidates < leastNumberOfCandidates)
+                {
+                    leastNumberOfCandidates = numberOfCandidates;
+                    idealCell = new Cell(cell.Content, cell.Row, cell.Column);
+                }
+            }
+            return idealCell;
+        }
+
+        private List<int> GetListOfCandidatesAtCell(ref Board board, int rowIndex, int columnIndex)
         {
             List<int> listOfCandidates = new List<int>();
             for (int testDigit = 1; testDigit < 10; testDigit++)
             {
-                if (ActiveBoard.IsPotentialCandidate(testDigit, rowIndex, columnIndex))
+                if (board.IsPotentialCandidate(testDigit, rowIndex, columnIndex))
                 {
                     listOfCandidates.Add(testDigit);
                 }
