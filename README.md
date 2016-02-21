@@ -14,7 +14,7 @@ This application was developed and tested in Visual Studio 2015 (Community Editi
 To use the program, first set the initial state of the board on the left side of the application window. You can enter the solution manually using the grid of input boxes, or you can load a file. Once the input is specified, you simply need to click the 'Solve' button and the solver algorithm will take over.
 
 ### Loading a Problem File
-The program will accept files with a variety of input formats. As long as the solution file is encoded with UTF-8 or ASCII and has an extension of **.txt** or **.dat**, the application will load the file and attempt to parse it. When parsing, the program looks for digits `1-9`, which it interprets as cell values, and the characters `0` and `.` which it interprets as a blank cell.
+The program will accept files with a variety of input formats. As long as the solution file is encoded with UTF-8 or ASCII and has an extension of **.txt** or **.csv**, the application will load the file and attempt to parse it. When parsing, the program looks for digits `1-9`, which it interprets as cell values, and the characters `0` and `.` which it interprets as a blank cell.
 
 File loading may fail if the input format is ambiguous. In particular, the parser will check that the sum of all characters in the set `[0-9, .]` is exactly equal to 81; if this is not true then the file is rejected.
 

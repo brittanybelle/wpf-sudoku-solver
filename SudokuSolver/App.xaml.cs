@@ -16,5 +16,12 @@ namespace SudokuSolver
         /* The app opens MainWindow by default, and the main program loop is
          * located there.
          */
+
+        private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            MessageBox.Show("An unhandled exception just occurred: " + e.Exception.Message, "Exception Sample", MessageBoxButton.OK, MessageBoxImage.Warning);
+            e.Handled = true;
+        }
+
     }
 }

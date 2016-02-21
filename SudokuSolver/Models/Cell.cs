@@ -10,20 +10,19 @@ namespace SudokuSolver.Models
 
     public class Cell : INotifyPropertyChanged
     {
-        private int[] allowedValues;
         private int content;
+
+        private static int[] allowedValues = new int[10] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
         public Cell()
         {
             // New cells initialize as empty
             content = 0;
+        }
 
-            // Set allowed values (digits 0-9)
-            allowedValues = new int[10];
-            for (int i = 0; i < 10; i++)
-            {
-                allowedValues[i] = i;
-            }
+        public Cell(int initialValue)
+        {
+            content = initialValue;
         }
 
         public int Content
@@ -37,7 +36,7 @@ namespace SudokuSolver.Models
             }
         }
 
-        public int[] AllowedValues
+        public static int[] AllowedValues
         {
             get { return allowedValues; }
         }

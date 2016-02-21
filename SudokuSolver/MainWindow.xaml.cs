@@ -15,6 +15,8 @@ using System.Windows.Shapes;
 
 using SudokuSolver.Models;
 using System.Data;
+using Microsoft.Win32;
+using System.IO;
 
 namespace SudokuSolver
 {
@@ -37,6 +39,19 @@ namespace SudokuSolver
         private void LoadFileButton_Click(object sender, RoutedEventArgs e)
         {
             Console.WriteLine("Load file button was clicked.");
+            // note to self - remember to check for file IO exceptions here
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Text files (*.txt)|*.txt|Comma separated values (*.csv)|*.csv";
+            openFileDialog.Multiselect = false;
+            if (openFileDialog.ShowDialog() == true) // True if user selects file
+            {
+                String inputString = File.ReadAllText(openFileDialog.FileName);
+                List<int> newBoardData = InputParser.GetBoard(inputString);
+                if (newBoardData != null)
+                {
+                    InputBoard.UpdateBoard(newBoardData);
+                }
+            }            
         }
 
         private void SolveButton_Click(object sender, RoutedEventArgs e)
