@@ -26,14 +26,14 @@ namespace SudokuSolver
     public partial class MainWindow : Window
     {
         Board InputBoard = new Board();
-        Board OutputBoard = new Board();
+        Solver solver = new Solver();
 
         public MainWindow()
         {
             InitializeComponent();
             
             InputGrid.ItemsSource = InputBoard.Cells;
-            OutputGrid.ItemsSource = InputBoard.Cells;
+            OutputGrid.ItemsSource = solver.ActiveBoard.Cells;
         }
 
         private void LoadFileButton_Click(object sender, RoutedEventArgs e)
@@ -57,6 +57,7 @@ namespace SudokuSolver
         private void SolveButton_Click(object sender, RoutedEventArgs e)
         {
             Console.WriteLine("Solve button was clicked.");
+            solver.Solve(InputBoard.GetBoardStateAsIntArray());
         }
         
     }

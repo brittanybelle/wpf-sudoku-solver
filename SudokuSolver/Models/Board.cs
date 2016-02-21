@@ -26,7 +26,7 @@ namespace SudokuSolver.Models
                 // Add new Cells within this row/List<Cell>
                 for (int j = 0; j < 9; j++)
                 {
-                    cells[i].Add(new Cell(0));
+                    cells[i].Add(new Cell(0, i, j));
                     cells[i][j].PropertyChanged += CheckCellValidityOnUpdate;
                 }
             }
@@ -42,6 +42,31 @@ namespace SudokuSolver.Models
                     cells[i][j].Content = inputArray[i*9 + j];
                 }
             }
+        }
+
+        public void UpdateBoardQuietly(List<int> inputArray)
+        {
+            ClearBoard();
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    cells[i][j].SetValueQuietly(inputArray[i * 9 + j]);
+                }
+            }
+        }
+
+        public List<int> GetBoardStateAsIntArray()
+        {
+            List<int> newList = new List<int>();
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    newList.Add(cells[i][j].Content);
+                }
+            }
+            return newList;
         }
 
         public void ClearBoard()
@@ -78,19 +103,30 @@ namespace SudokuSolver.Models
 
         public void CheckCellValidityOnUpdate(object sender, PropertyChangedEventArgs args)
         {
-            if (! this.IsValid())
+            int rowIndex = (sender as Cell).Row;
+            int columnIndex = (sender as Cell).Column;
+
+            if (! CanAddCellAt(rowIndex, columnIndex))
             {
-                for (int i = 0; i < 9; i++)
-                {
-                    for (int j = 0; j < 9; j++)
-                    {
-                        if (cells[i][j].Equals(sender as Cell))
-                        {
-                            cells[i][j].Content = 0;
-                            MessageBox.Show("You can't change the cell to this - illegal input!");
-                        }
-                    }
-                }
+                cells[rowIndex][columnIndex].Content = 0;
+                MessageBox.Show("You can't change the cell to this - illegal input!");
+            }
+        }
+
+        public bool IsPotentialCandidate(int testNumber, int rowIndex, int columnIndex)
+        {
+            cells[rowIndex][columnIndex].SetValueQuietly(testNumber);
+
+            if(CanAddCellAt(rowIndex, columnIndex))
+            {
+                cells[rowIndex][columnIndex].SetValueQuietly(0);
+                return true;
+            }
+
+            else
+            {
+                cells[rowIndex][columnIndex].SetValueQuietly(0);
+                return false;
             }
         }
 
@@ -205,16 +241,16 @@ namespace SudokuSolver.Models
 
             else if (rowIndex < 6)
             {
-                if (columnIndex < 3) { return 4; }
-                else if (columnIndex < 6) { return 5; }
-                else { return 6; }
+                if (columnIndex < 3) { return 3; }
+                else if (columnIndex < 6) { return 4; }
+                else { return 5; }
             }
 
             else
             {
-                if (columnIndex < 3) { return 7; }
-                else if (columnIndex < 6) { return 8; }
-                else { return 9; }
+                if (columnIndex < 3) { return 6; }
+                else if (columnIndex < 6) { return 7; }
+                else { return 8; }
             }
         }
 
