@@ -31,10 +31,22 @@ namespace SudokuSolver.Models
             set
             {
                 content = value;
-                Console.WriteLine("Cell updated! New value = " + content);
+                //Console.WriteLine("Cell updated! New value = " + content);
                 NotifyPropertyChanged("Content");
             }
         }
+
+        /*
+        public void SetValueLoudly(int newValue)
+        {
+            content = newValue;
+            NotifyPropertyChanged("Content");
+        }
+
+        public void SetValueQuietly(int newValue)
+        {
+            content = newValue;
+        } */
 
         public static int[] AllowedValues
         {

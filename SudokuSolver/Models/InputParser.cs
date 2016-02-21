@@ -37,10 +37,11 @@ namespace SudokuSolver.Models
             }
 
             // Check that the initial board is legal.
-            Board testBoard = new Board(board);
+            Board testBoard = new Board();
+            testBoard.UpdateBoard(board);
             if (! testBoard.IsValid())
             {
-                MessageBox.Show("Input error: the input board was not legal!");
+                MessageBox.Show("Input error: the input board is not legal!");
                 return null;
             }
 

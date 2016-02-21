@@ -8,6 +8,8 @@ namespace SudokuSolver.Models
 {
     public class Solver
     {
+        Board thisBoard = new Board();
+
         public Solver()
         {
             // constructor

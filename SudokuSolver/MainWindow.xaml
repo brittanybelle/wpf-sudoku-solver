@@ -15,7 +15,7 @@
             <Viewbox MinHeight="50" MinWidth="50">
                 <ComboBox 
                     ItemsSource="{Binding Path=AllowedValues}" 
-                    SelectedValue="{Binding Path=Content, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                    SelectedValue="{Binding Path=Content, UpdateSourceTrigger=LostFocus, Mode=TwoWay}"
                     Padding="5"
                     Margin="2"
                     HorizontalContentAlignment="Center"
