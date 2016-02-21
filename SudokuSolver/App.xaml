@@ -2,8 +2,18 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:SudokuSolver"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        
+        <!-- Testing styles... -->
+        <Style TargetType="ComboBox">
+            <Setter Property="Background" Value="Aquamarine" />
+        </Style>
+        
+        <Style TargetType="ComboBoxItem">
+            <Setter Property="Background" Value="LightPink"/>
+        </Style>
+        
     </Application.Resources>
 </Application>

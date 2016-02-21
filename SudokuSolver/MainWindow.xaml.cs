@@ -13,6 +13,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using SudokuSolver.Models;
+using System.Data;
+
 namespace SudokuSolver
 {
     /// <summary>
@@ -20,9 +23,15 @@ namespace SudokuSolver
     /// </summary>
     public partial class MainWindow : Window
     {
+        Board InputBoard = new Board();
+        Board OutputBoard = new Board();
+
         public MainWindow()
         {
             InitializeComponent();
+            
+            InputGrid.ItemsSource = InputBoard.Cells;
+            OutputGrid.ItemsSource = InputBoard.Cells;
         }
 
         private void LoadFileButton_Click(object sender, RoutedEventArgs e)
@@ -34,5 +43,6 @@ namespace SudokuSolver
         {
             Console.WriteLine("Solve button was clicked.");
         }
+        
     }
 }

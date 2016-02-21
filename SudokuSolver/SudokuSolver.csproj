@@ -74,6 +74,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\Cell.cs" />
     <Compile Include="Models\InputParser.cs" />
     <Compile Include="Models\Solver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
